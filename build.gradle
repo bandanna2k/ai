@@ -18,6 +18,7 @@ dependencies {
 allprojects {
     tasks.withType(Test) {
         outputs.upToDateWhen { false }
+        filter { setFailOnNoMatchingTests(false) }
         testLogging {
             events = ["passed", "skipped", "failed"]
             exceptionFormat = "full"
