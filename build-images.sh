@@ -1,0 +1,1 @@
+(cd local-llm/docker && ./build.sh)
