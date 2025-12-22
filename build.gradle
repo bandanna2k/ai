@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group = 'ai'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+allprojects {
+    tasks.withType(Test) {
+        outputs.upToDateWhen { false }
+        testLogging {
+            events = ["passed", "skipped", "failed"]
+            exceptionFormat = "full"
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+            displayGranularity = 2
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
