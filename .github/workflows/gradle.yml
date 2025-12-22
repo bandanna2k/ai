@@ -31,3 +31,6 @@ jobs:
 
     - name: Build images
       run: (cd local-llm/docker && ./build.sh)
+
+    - name: Test
+      run: ./gradlew test --tests 'ai.localllm*'
