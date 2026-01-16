@@ -14,8 +14,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation 'org.testcontainers:testcontainers:2.0.2'
-    implementation 'io.weaviate:client:5.5.0'
+    testImplementation 'io.weaviate:client:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.27.4'
+    testImplementation 'org.testcontainers:testcontainers:2.0.2'
 }
 
 test {

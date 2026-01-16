@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,10 +43,10 @@ public class ExampleTest extends VectorDatabaseBase {
         assertFalse(schemaResult.hasErrors());
 
         // Add model items
-        addDocument(weaviate, new Float[]{0.9f, 0.1f, 0.2f}, "The quick brown fox", "animals");
-        addDocument(weaviate, new Float[]{0.85f, 0.15f, 0.25f}, "Dogs are loyal pets", "animals");
-        addDocument(weaviate, new Float[]{0.1f, 0.9f, 0.2f}, "Rust programming language", "tech");
-        addDocument(weaviate, new Float[]{0.15f, 0.85f, 0.25f}, "Java is a popular language", "tech");
+        addDocument(new Float[]{0.9f, 0.1f, 0.2f}, "The quick brown fox", "animals");
+        addDocument(new Float[]{0.85f, 0.15f, 0.25f}, "Dogs are loyal pets", "animals");
+        addDocument(new Float[]{0.1f, 0.9f, 0.2f}, "Rust programming language", "tech");
+        addDocument(new Float[]{0.15f, 0.85f, 0.25f}, "Java is a popular language", "tech");
 
         // Query by vector similarity
         {
@@ -56,7 +57,8 @@ public class ExampleTest extends VectorDatabaseBase {
 
             // Verify we got tech-related results (closest to our query vector)
             String resultData = result.getResult().getData().toString();
-            assertTrue(resultData.contains("Java") || resultData.contains("Rust"));
+            assertThat(resultData).containsIgnoringCase("Java");
+            assertThat(resultData).containsIgnoringCase("Rust");
         }
         {
             Result<GraphQLResponse> result = queryDatabase(new Float[]{0.9f, 0.2f, 0.2f});
@@ -67,6 +69,8 @@ public class ExampleTest extends VectorDatabaseBase {
             // Verify we got animal-related results (closest to our query vector)
             String resultData = result.getResult().getData().toString();
             assertTrue(resultData.contains("Dogs") || resultData.contains("fox"));
+            assertThat(resultData).containsIgnoringCase("Dogs");
+            assertThat(resultData).containsIgnoringCase("Fox");
         }
     }
 
@@ -85,12 +89,12 @@ public class ExampleTest extends VectorDatabaseBase {
                 .run();
     }
 
-    private void addDocument(WeaviateClient client, Float[] vector, String content, String category) {
+    private void addDocument(Float[] vector, String content, String category) {
         Map<String, Object> properties = new HashMap<>();
         properties.put("content", content);
         properties.put("category", category);
 
-        Result<WeaviateObject> result = client.data().creator()
+        Result<WeaviateObject> result = weaviate.data().creator()
                 .withClassName("Document")
                 .withProperties(properties)
                 .withVector(vector)

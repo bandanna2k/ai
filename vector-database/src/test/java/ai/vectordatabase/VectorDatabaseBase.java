@@ -31,6 +31,7 @@ class VectorDatabaseBase {
                 "CLUSTER_HOSTNAME", "node1");
 
         databaseContainer = new GenericContainer<>(DockerImageName.parse("semitechnologies/weaviate:1.34.10"))
+                .withExposedPorts(8080)
                 .withCreateContainerCmdModifier(cmd -> cmd
                         .withName("weaviate")
                         .withHostConfig(
