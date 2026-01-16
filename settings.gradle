@@ -5,3 +5,5 @@ include 'text-to-image:stable-diffusion'
 include 'text-to-image:automatic1111'
 include 'text-to-image:comfyui'
 
+
+include 'vector-database'
