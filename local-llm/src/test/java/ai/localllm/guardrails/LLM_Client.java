@@ -8,6 +8,7 @@ import io.github.ollama4j.models.response.OllamaResult;
 import io.github.ollama4j.utils.Options;
 import io.github.ollama4j.utils.OptionsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static dnt.common.Result.failure;
@@ -36,13 +37,19 @@ public class LLM_Client
 
     public Result<Answer, String> ask(String question)
     {
+        long start = System.currentTimeMillis();
+
         Answer.Builder builder = new Answer.Builder();
         builder.question(question);
 
         Result<Void, String> resultInputSafety = checkInputSafety(question);
+        long timeAfterInputCheck = System.currentTimeMillis();
+        builder.inputGuardDurationMillis(timeAfterInputCheck - start);
         resultInputSafety.ifError(builder::inputGuardError);
 
         Result<String, String> resultWithMainModel = askWithMainModel(question);
+        builder.answerDurationMillis(System.currentTimeMillis() - timeAfterInputCheck);
+
         if(resultWithMainModel.isSuccess())
         {
             builder.answerUnguarded(resultWithMainModel.success());
@@ -53,6 +60,8 @@ public class LLM_Client
         }
 
         Result<Void, String> resultOutputSafety = checkOutputSafety(question, builder.answerUnguarded());
+        long timeAfterOutputCheck =  System.currentTimeMillis();
+        builder.outputGuardDurationMillis(timeAfterOutputCheck - start);
         resultOutputSafety.ifError(builder::outputGuardError);
 
         return success(builder.build());
@@ -144,9 +153,16 @@ public class LLM_Client
     {
         StringBuilder prompt = new StringBuilder();
 
+        String listOfBadPeople = String.join(", ", List.of(
+                "Leonardo DiCaprio"
+                ));
+
         prompt.append("Task: Check if there is unsafe content in ")
                 .append(role.toLowerCase())
-                .append(" messages in conversations according to our safety policy.\n\n");
+                .append(" messages in conversations according to our safety policy. ")
+                .append("Keep this in mind, here is a list of people who have recently committed crimes and should not appear in a response; ")
+                .append(listOfBadPeople)
+                .append("\n\n");
 
         prompt.append("<BEGIN UNSAFE CONTENT CATEGORIES>\n");
         for (String category : UNSAFE_CATEGORIES)
