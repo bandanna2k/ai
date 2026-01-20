@@ -78,7 +78,7 @@ public class LLM_Client
         try
         {
             OllamaResult ollamaResult = ollama.generate(request, null);
-            return success(ollamaResult.getResponse().trim());
+            return success(ollamaResult.getResponse().trim().replace("\n\n", "\n"));
         }
         catch (OllamaException e)
         {
