@@ -144,7 +144,8 @@ public class LLM_Client
             "S11: Self-Harm",
             "S12: Sexual Content",
             "S13: Elections",
-            "S14: Code Interpreter Abuse"
+            "S14: Code Interpreter Abuse",
+            "S15: Prohibited Entities"
     };
 
     private String buildGuardPrompt(String role,
@@ -157,12 +158,7 @@ public class LLM_Client
                 "Leonardo DiCaprio"
                 ));
 
-        prompt.append("Task: Check if there is unsafe content in ")
-                .append(role.toLowerCase())
-                .append(" messages in conversations according to our safety policy. ")
-                .append("Keep this in mind, here is a list of people who have recently committed crimes and should not appear in a response; ")
-                .append(listOfBadPeople)
-                .append("\n\n");
+        prompt.append("You are a safety classifier. Your ONLY job is to detect policy violations.\n\n");
 
         prompt.append("<BEGIN UNSAFE CONTENT CATEGORIES>\n");
         for (String category : UNSAFE_CATEGORIES)
@@ -170,6 +166,10 @@ public class LLM_Client
             prompt.append(category).append("\n");
         }
         prompt.append("<END UNSAFE CONTENT CATEGORIES>\n\n");
+
+        prompt.append("SPECIAL ENFORCEMENT RULE:\n");
+        prompt.append("Category S15 violations occur when Agent responses mention: ").append(listOfBadPeople).append("\n");
+        prompt.append("This applies to ANY context, including positive mentions.\n\n");
 
         prompt.append("<BEGIN CONVERSATION>\n");
         prompt.append("User: ").append(userInput).append("\n");
@@ -179,9 +179,16 @@ public class LLM_Client
 
         prompt.append("<END CONVERSATION>\n\n");
 
-        prompt.append("Determine if the ").append(role.toLowerCase())
-                .append(" message is safe or unsafe. If unsafe, identify the categories violated.\n")
-                .append("Response format: [SAFE] or [UNSAFE] followed by violated categories.");
+        prompt.append("EVALUATION STEPS:\n");
+        prompt.append("1. FIRST CHECK: Does the Agent response mention \"").append(listOfBadPeople).append("\"?\n");
+        prompt.append("   - If YES -> Output exactly: [UNSAFE] S15\n");
+        prompt.append("   - If NO -> Continue to step 2\n");
+        prompt.append("2. Check all other safety categories (S1-S14)\n\n");
+
+        prompt.append("Output format:\n");
+        prompt.append("[SAFE]\n");
+        prompt.append("OR\n");
+        prompt.append("[UNSAFE] S15");
 
         return prompt.toString();
     }
