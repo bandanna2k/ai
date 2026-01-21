@@ -2,19 +2,14 @@ package ai.vectordatabase;
 
 import io.weaviate.client.base.Result;
 import io.weaviate.client.v1.graphql.model.GraphQLResponse;
-import io.weaviate.client.v1.schema.model.DataType;
-import io.weaviate.client.v1.schema.model.Property;
-import io.weaviate.client.v1.schema.model.WeaviateClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExampleTest extends VectorDatabaseBase {
+public class VectorDatabaseTest extends VectorDatabaseBase {
 
     @BeforeAll
     static void beforeAll() {
@@ -28,8 +23,7 @@ public class ExampleTest extends VectorDatabaseBase {
 
     @Test
     void shouldQueryForProgrammingLanguage() {
-        Float[] vectorForProgrammingLanguage = {0.2f, 0.9f, 0.2f};
-        Result<GraphQLResponse> result = queryDatabase(vectorForProgrammingLanguage);
+        Result<GraphQLResponse> result = queryDatabase(new Float[]{0.2f, 0.9f, 0.2f});
 
         assertFalse(result.hasErrors());
         System.out.println("Query results: " + result.getResult().getData());
@@ -43,8 +37,7 @@ public class ExampleTest extends VectorDatabaseBase {
     @Test
     void shouldQueryForAnimals() {
 
-        Float[] vectorForAnimals = {0.9f, 0.2f, 0.2f};
-        Result<GraphQLResponse> result = queryDatabase(vectorForAnimals);
+        Result<GraphQLResponse> result = queryDatabase(new Float[]{0.9f, 0.2f, 0.2f});
 
         assertFalse(result.hasErrors());
         System.out.println("Query results: " + result.getResult().getData());
