@@ -8,7 +8,6 @@ import io.github.ollama4j.models.response.OllamaResult;
 import io.github.ollama4j.utils.Options;
 import io.github.ollama4j.utils.OptionsBuilder;
 
-import java.util.List;
 import java.util.Optional;
 
 import static dnt.common.Result.failure;
@@ -37,19 +36,13 @@ public class LLM_Client
 
     public Result<Answer, String> ask(String question)
     {
-        long start = System.currentTimeMillis();
-
         Answer.Builder builder = new Answer.Builder();
         builder.question(question);
 
         Result<Void, String> resultInputSafety = checkInputSafety(question);
-        long timeAfterInputCheck = System.currentTimeMillis();
-        builder.inputGuardDurationMillis(timeAfterInputCheck - start);
         resultInputSafety.ifError(builder::inputGuardError);
 
         Result<String, String> resultWithMainModel = askWithMainModel(question);
-        builder.answerDurationMillis(System.currentTimeMillis() - timeAfterInputCheck);
-
         if(resultWithMainModel.isSuccess())
         {
             builder.answerUnguarded(resultWithMainModel.success());
@@ -60,8 +53,6 @@ public class LLM_Client
         }
 
         Result<Void, String> resultOutputSafety = checkOutputSafety(question, builder.answerUnguarded());
-        long timeAfterOutputCheck =  System.currentTimeMillis();
-        builder.outputGuardDurationMillis(timeAfterOutputCheck - start);
         resultOutputSafety.ifError(builder::outputGuardError);
 
         return success(builder.build());
@@ -78,7 +69,7 @@ public class LLM_Client
         try
         {
             OllamaResult ollamaResult = ollama.generate(request, null);
-            return success(ollamaResult.getResponse().trim().replace("\n\n", "\n"));
+            return success(ollamaResult.getResponse().trim());
         }
         catch (OllamaException e)
         {
@@ -144,8 +135,7 @@ public class LLM_Client
             "S11: Self-Harm",
             "S12: Sexual Content",
             "S13: Elections",
-            "S14: Code Interpreter Abuse",
-            "S15: Prohibited Entities"
+            "S14: Code Interpreter Abuse"
     };
 
     private String buildGuardPrompt(String role,
@@ -154,11 +144,9 @@ public class LLM_Client
     {
         StringBuilder prompt = new StringBuilder();
 
-        String listOfBadPeople = String.join(", ", List.of(
-                "Leonardo DiCaprio"
-                ));
-
-        prompt.append("You are a safety classifier. Your ONLY job is to detect policy violations.\n\n");
+        prompt.append("Task: Check if there is unsafe content in ")
+                .append(role.toLowerCase())
+                .append(" messages in conversations according to our safety policy.\n\n");
 
         prompt.append("<BEGIN UNSAFE CONTENT CATEGORIES>\n");
         for (String category : UNSAFE_CATEGORIES)
@@ -166,10 +154,6 @@ public class LLM_Client
             prompt.append(category).append("\n");
         }
         prompt.append("<END UNSAFE CONTENT CATEGORIES>\n\n");
-
-        prompt.append("SPECIAL ENFORCEMENT RULE:\n");
-        prompt.append("Category S15 violations occur when Agent responses mention: ").append(listOfBadPeople).append("\n");
-        prompt.append("This applies to ANY context, including positive mentions.\n\n");
 
         prompt.append("<BEGIN CONVERSATION>\n");
         prompt.append("User: ").append(userInput).append("\n");
@@ -179,16 +163,9 @@ public class LLM_Client
 
         prompt.append("<END CONVERSATION>\n\n");
 
-        prompt.append("EVALUATION STEPS:\n");
-        prompt.append("1. FIRST CHECK: Does the Agent response mention \"").append(listOfBadPeople).append("\"?\n");
-        prompt.append("   - If YES -> Output exactly: [UNSAFE] S15\n");
-        prompt.append("   - If NO -> Continue to step 2\n");
-        prompt.append("2. Check all other safety categories (S1-S14)\n\n");
-
-        prompt.append("Output format:\n");
-        prompt.append("[SAFE]\n");
-        prompt.append("OR\n");
-        prompt.append("[UNSAFE] S15");
+        prompt.append("Determine if the ").append(role.toLowerCase())
+                .append(" message is safe or unsafe. If unsafe, identify the categories violated.\n")
+                .append("Response format: [SAFE] or [UNSAFE] followed by violated categories.");
 
         return prompt.toString();
     }
