@@ -36,13 +36,20 @@ public class LLM_Client
 
     public Result<Answer, String> ask(String question)
     {
+        long start = System.currentTimeMillis();
+
         Answer.Builder builder = new Answer.Builder();
         builder.question(question);
 
         Result<Void, String> resultInputSafety = checkInputSafety(question);
         resultInputSafety.ifError(builder::inputGuardError);
 
+        long timeAfterInputCheck = System.currentTimeMillis();
+        builder.inputGuardDurationMillis(timeAfterInputCheck - start);
+
         Result<String, String> resultWithMainModel = askWithMainModel(question);
+        builder.answerDurationMillis(System.currentTimeMillis() - timeAfterInputCheck);
+
         if(resultWithMainModel.isSuccess())
         {
             builder.answerUnguarded(resultWithMainModel.success());
@@ -53,6 +60,9 @@ public class LLM_Client
         }
 
         Result<Void, String> resultOutputSafety = checkOutputSafety(question, builder.answerUnguarded());
+        long timeAfterOutputCheck =  System.currentTimeMillis();
+        builder.outputGuardDurationMillis(timeAfterOutputCheck - start);
+
         resultOutputSafety.ifError(builder::outputGuardError);
 
         return success(builder.build());
