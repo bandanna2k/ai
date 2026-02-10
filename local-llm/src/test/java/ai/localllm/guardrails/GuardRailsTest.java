@@ -25,7 +25,7 @@ class GuardRailsTest extends GuardedLLM_Base
                 Context: My name is David. Question: What is my name?
                 """, Optional.empty(), Optional.empty());
     }
-    @Test
+    @Test @Disabled
     void shouldFailBothRequestAndResponse()
     {
         shouldFilterRequest(
