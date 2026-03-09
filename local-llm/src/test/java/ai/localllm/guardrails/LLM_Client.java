@@ -3,6 +3,7 @@ package ai.localllm.guardrails;
 import dnt.common.Result;
 import io.github.ollama4j.Ollama;
 import io.github.ollama4j.exceptions.OllamaException;
+import io.github.ollama4j.models.chat.OllamaChatRequest;
 import io.github.ollama4j.models.generate.OllamaGenerateRequest;
 import io.github.ollama4j.models.response.OllamaResult;
 import io.github.ollama4j.utils.Options;
@@ -28,7 +29,7 @@ public class LLM_Client
         ollama = new Ollama("http://localhost:11434/");
         ollama.setRequestTimeoutSeconds(30_000);
 
-        int seed = 4;
+        int seed = 5;
         seededOptions = new OptionsBuilder()
                 .setSeed(seed)
                 .build();

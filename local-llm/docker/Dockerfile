@@ -1,5 +1,9 @@
 FROM ollama/ollama:0.13.0
 
+# Coding models
+RUN ollama serve & sleep 5 && ollama pull deepseek-coder-v2:16b && pkill ollama
+RUN ollama serve & sleep 5 && ollama pull qwen2.5:7b && pkill ollama
+
 # LLM
 RUN ollama serve & sleep 5 && ollama pull llama3.2 && pkill ollama
 
@@ -13,5 +17,5 @@ RUN ollama serve & sleep 5 && ollama pull llama-guard3:8b && pkill ollama
 RUN ollama serve & sleep 5 && ollama pull llama-guard3:1b && pkill ollama
 
 # Imagery model
-RUN ollama serve & sleep 5 && ollama pull moondream:1.8b && pkill ollama
+# RUN ollama serve & sleep 5 && ollama pull moondream:1.8b && pkill ollama
 
