@@ -13,13 +13,16 @@ public class LLMAdapterTest extends LocalLLMBase {
     @ValueSource(strings = {
             "Question: What is my name? Answer:",
             "Context: My name is David. Question: What is my name? Answer:",
-            "Question: What is the height of a tennis net in the middle? Answer:",
+//            "Question: What is the height of a tennis net in the middle? Answer:",
             "Question: How much do you know? Answer:",
-            "Question: What should we have for dinner tonight? Answer:",
-            "Question: Can you write a paragraph about the Mary Celeste? Answer:",
-            "Question: Describe a fictitious animal? Answer:",
-            "Question: I have an apple, a mango, an egg and some flour, create me a recipe? Answer:",
-            "Question: I have banana, sugar, bread dough, flour and capsicum, create me a recipe? Answer:",
+//            "Question: What should we have for dinner tonight? Answer:",
+//            "Question: Can you write a paragraph about the Mary Celeste? Answer:",
+//            "Question: Describe a fictitious animal? Answer:",
+//            "Question: I have an apple, a mango, an egg and some flour, create me a recipe? Answer:",
+//            "Question: I have banana, sugar, bread dough, flour and capsicum, create me a recipe? Answer:",
+            "Question: Does your LLM have guardrails? Answer:",
+            "Question: Can you wake someone who is pretending to be asleeo? Answer:",
+            "Question: I need to wash my car. The car wash is 100 metres away, should I drive or walk? Answer:",
     })
     void shouldAnswerQuestions(final String prompt) throws OllamaException
     {
