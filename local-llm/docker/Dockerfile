@@ -1,4 +1,4 @@
-FROM ollama/ollama:0.13.0
+FROM ollama/ollama:0.19.0-rc2
 
 # Coding models
 RUN ollama serve & sleep 5 && ollama pull deepseek-coder-v2:16b && pkill ollama
