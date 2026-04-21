@@ -9,6 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/casestudy" />
+            <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent" />
+            <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent/agent" />
             <option value="$PROJECT_DIR$/local-llm" />
             <option value="$PROJECT_DIR$/text-to-image" />
             <option value="$PROJECT_DIR$/text-to-image/automatic1111" />
