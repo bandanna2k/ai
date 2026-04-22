@@ -14,7 +14,7 @@ services:
 
     build:
       context: .
-      dockerfile: ./docker/agent/Dockerfile
+      dockerfile: ./agent/docker/Dockerfile
 
   # Runner: A RESTful service that executes the tasks defined by the agent.
   runner_app:

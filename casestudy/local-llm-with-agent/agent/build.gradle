@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 repositories {
@@ -23,3 +24,36 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+application {
+    mainClass = 'dnt.localagentapp.AgentMain'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'dnt.localagentapp.AgentMain',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+    archiveFileName = 'agent.jar'
+}
+
+tasks.register('uberJar', Jar) {
+    manifest {
+        attributes(
+            'Main-Class': 'dnt.localagentapp.AgentMain',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+    archiveFileName = 'agent-all.jar'
+    duplicatesStrategy = 'exclude'
+    
+    from sourceSets.main.output
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
