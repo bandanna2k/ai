@@ -1,5 +1,6 @@
 package dnt.localagentapp;
 
+import dnt.localagentapp.tools.OrdersTool;
 import io.vertx.core.Vertx;
 
 import java.util.List;
@@ -27,17 +28,18 @@ public class AgentMain {
 
         Agent agent = new Agent(host, model, List.of(
                 new ClockTool(),
-                new CalculatorTool()
+                new CalculatorTool(),
+                new OrdersTool()
         ));
 
-        Vertx vertx = Vertx.vertx();
+        final Vertx vertx = Vertx.vertx();
 
         Runtime.getRuntime().addShutdownHook(new Thread(vertx::close));
 
         vertx.deployVerticle(new AgentVerticle(agent))
                 .onFailure(t -> {
                     System.err.println("Failed to start: " + t.getMessage());
-                    System.exit(1);
+                    System.exit(2);
                 });
 
         // Keep main thread alive

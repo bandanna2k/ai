@@ -2,7 +2,11 @@
   <div id="app">
     <div class="container">
       <h1>🤖 ollama4j Agent</h1>
-      <p class="subtitle">Tools: <span class="tool-badge">get_time</span> <span class="tool-badge">calculate</span></p>
+      <p class="subtitle">Tools:
+          <span class="tool-badge">get_time</span>
+          <span class="tool-badge">calculate</span>
+           <span class="tool-badge">Order Datastore</span>
+        </p>
 
       <div class="chat-window" ref="chatWindow">
         <div v-for="(msg, i) in messages" :key="i" :class="['message', msg.role]">
