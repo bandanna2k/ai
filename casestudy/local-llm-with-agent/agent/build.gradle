@@ -13,6 +13,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'io.vertx:vertx-core:5.0.11'
+    implementation 'io.vertx:vertx-web:5.0.11'
     implementation 'io.vertx:vertx-web-client:5.0.5'
     implementation 'io.github.ollama4j:ollama4j:1.1.6'
 

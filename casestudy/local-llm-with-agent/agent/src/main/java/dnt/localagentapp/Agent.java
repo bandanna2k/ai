@@ -51,15 +51,14 @@ public class Agent {
         toolList.forEach(t -> tools.put(t.name(), t));
     }
 
-    /** Run the agent on a user question and return the final answer. */
-    public String run(String userQuestion) throws Exception {
+    /** Run the agent on a user question and return a structured response. */
+    public AgentResponse run(String userQuestion) throws Exception {
 
-        // Build the system prompt describing the ReAct protocol and available tools
         String systemPrompt = buildSystemPrompt();
 
         List<OllamaChatMessage> history = new ArrayList<>();
+        List<AgentStep> steps = new ArrayList<>();
 
-        // Seed with system prompt then user message
         history.add(new OllamaChatMessage(OllamaChatMessageRole.SYSTEM, systemPrompt));
         history.add(new OllamaChatMessage(OllamaChatMessageRole.USER, userQuestion));
 
@@ -69,7 +68,6 @@ public class Agent {
         for (int step = 1; step <= MAX_STEPS; step++) {
             System.out.println("--- Step " + step + " ---");
 
-            // Call the model
             OllamaChatRequest request = OllamaChatRequest.builder()
                     .withModel(model)
                     .withMessages(history)
@@ -81,15 +79,22 @@ public class Agent {
 
             System.out.println("[LLM]\n" + reply + "\n");
 
-            // The result already contains the updated history (including assistant reply)
             history = result.getChatHistory();
+
+            // Parse THOUGHT lines
+            for (String line : reply.split("\n")) {
+                if (line.trim().toUpperCase().startsWith("THOUGHT:")) {
+                    steps.add(new AgentStep("THOUGHT", line.trim().substring("THOUGHT:".length()).trim()));
+                }
+            }
 
             // Check for FINAL ANSWER
             Matcher finalMatcher = FINAL_PATTERN.matcher(reply);
             if (finalMatcher.find()) {
                 String answer = finalMatcher.group(1).trim();
                 System.out.println("[Agent] Final answer reached after " + step + " step(s).");
-                return answer;
+                steps.add(new AgentStep("FINAL", answer));
+                return new AgentResponse(steps, answer);
             }
 
             // Check for ACTION
@@ -99,6 +104,7 @@ public class Agent {
                 String argument = actionMatcher.group(2).trim();
 
                 System.out.println("[Agent] Tool call: " + toolName + "(" + argument + ")");
+                steps.add(new AgentStep("ACTION", toolName + "(" + argument + ")"));
 
                 String observation;
                 Tool tool = tools.get(toolName);
@@ -113,19 +119,20 @@ public class Agent {
                 }
 
                 System.out.println("[Tool] Observation: " + observation + "\n");
+                steps.add(new AgentStep("OBSERVATION", observation));
 
-                // Feed the observation back as a user message so the model continues
-                String observationMsg = "OBSERVATION: " + observation;
-                history.add(new OllamaChatMessage(OllamaChatMessageRole.USER, observationMsg));
+                history.add(new OllamaChatMessage(OllamaChatMessageRole.USER, "OBSERVATION: " + observation));
 
             } else {
-                // Model neither called a tool nor gave a final answer — treat reply as the answer
                 System.out.println("[Agent] No action detected; treating reply as final answer.");
-                return reply;
+                steps.add(new AgentStep("FINAL", reply));
+                return new AgentResponse(steps, reply);
             }
         }
 
-        return "Agent reached the step limit without producing a final answer.";
+        String fallback = "Agent reached the step limit without producing a final answer.";
+        steps.add(new AgentStep("FINAL", fallback));
+        return new AgentResponse(steps, fallback);
     }
 
     private String buildSystemPrompt() {
