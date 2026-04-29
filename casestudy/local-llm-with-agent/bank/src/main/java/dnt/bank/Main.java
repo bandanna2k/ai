@@ -37,6 +37,15 @@ public class Main {
     {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
+
+        router.get("/openapi.yaml").handler(ctx ->
+                vertx.fileSystem().readFile("openapi.yaml")
+                        .onSuccess(buffer -> ctx.response()
+                                .putHeader("Content-Type", "application/yaml")
+                                .putHeader("Content-Disposition", "attachment; filename=\"openapi.yaml\"")
+                                .end(buffer))
+                        .onFailure(err -> ctx.response().setStatusCode(404).end("openapi.yaml not found")));
+
         router.get("/balance").handler(this::balance);
         router.post("/deposit").handler(this::deposit);
         router.post("/withdrawal").handler(this::withdrawal);
