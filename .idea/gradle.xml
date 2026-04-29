@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent" />
             <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent/agent" />
             <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent/bank" />
+            <option value="$PROJECT_DIR$/casestudy/local-llm-with-agent/mcp-service" />
             <option value="$PROJECT_DIR$/local-llm" />
             <option value="$PROJECT_DIR$/text-to-image" />
             <option value="$PROJECT_DIR$/text-to-image/automatic1111" />
