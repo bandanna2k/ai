@@ -6,5 +6,6 @@ include 'text-to-image:automatic1111'
 include 'text-to-image:comfyui'
 
 include 'casestudy:local-llm-with-agent:agent'
+include 'casestudy:local-llm-with-agent:bank'
 
 include 'vector-database'
