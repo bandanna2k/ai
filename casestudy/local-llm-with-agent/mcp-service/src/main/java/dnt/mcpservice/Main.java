@@ -14,8 +14,8 @@ public class Main
         Vertx vertx = Vertx.vertx();
         Runtime.getRuntime().addShutdownHook(new Thread(vertx::close));
 
-        TaskService taskService = new TaskService();
-        McpService mcpService = new McpService(taskService);
+        McpService mcpService = new McpService();
+        mcpService.start();
 
         vertx.createHttpServer()
                 .requestHandler(event -> {
@@ -26,3 +26,5 @@ public class Main
 
     }
 }
+
+
