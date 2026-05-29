@@ -1,4 +1,4 @@
-package dnt.mcpservice;
+package dnt.mcpservice.tools;
 
 /**
  * Interface for MCP tools that can be registered and called by clients
