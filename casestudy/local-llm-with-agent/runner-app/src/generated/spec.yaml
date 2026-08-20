@@ -1,0 +1,323 @@
+openapi: 3.0.1
+info:
+  title: Runner App API
+  description: "API for querying countries, courses, athletes, and event data"
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Development server
+paths:
+  /athlete:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get athletes
+      description: Returns athlete details for the given ids
+      operationId: getAthlete
+      parameters:
+      - name: ids
+        in: query
+        description: Comma separated list of athlete ids
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Athletes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Athlete"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /countries:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get countries
+      description: Returns the list of countries with available courses
+      operationId: getCountries
+      responses:
+        "200":
+          description: Countries retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Country"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /courses:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get courses
+      description: "Returns the list of courses, optionally filtered by country"
+      operationId: getCourses
+      parameters:
+      - name: country
+        in: query
+        description: ISO country code to filter courses by
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Courses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /event-history/{courseId}:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get event history for a course
+      description: Returns the history of events held on the given course
+      operationId: getEventHistory
+      parameters:
+      - name: courseId
+        in: path
+        description: The unique course identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Event history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventHistoryEntry"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /event-results/{courseId}/{eventNumber}:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get results for an event
+      description: Returns the results of the given event on the given course
+      operationId: getEventResults
+      parameters:
+      - name: courseId
+        in: path
+        description: The unique course identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: eventNumber
+        in: path
+        description: The event number within the course
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Event results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventResult"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /event-volunteers/{courseId}/{eventNumber}:
+    get:
+      tags:
+      - RunnerApp
+      summary: Get volunteers for an event
+      description: Returns the volunteers assigned to the given event on the given
+        course
+      operationId: getEventVolunteers
+      parameters:
+      - name: courseId
+        in: path
+        description: The unique course identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: eventNumber
+        in: path
+        description: The event number within the course
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Event volunteers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Volunteer"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    Athlete:
+      type: object
+      properties:
+        athleteId:
+          type: integer
+          description: The unique athlete identifier
+          format: int64
+          example: 1
+        name:
+          type: string
+          description: Athlete name
+          example: Alice Smith
+        country:
+          type: string
+          description: ISO country code the athlete represents
+          example: GB
+      description: An athlete registered in the runner system
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine readable error code
+          example: NOT_FOUND
+        message:
+          type: string
+          description: Human readable error message
+          example: Course not found
+      description: Error information returned when a request fails
+    Country:
+      type: object
+      properties:
+        code:
+          type: string
+          description: ISO country code
+          example: GB
+        name:
+          type: string
+          description: Country name
+          example: United Kingdom
+      description: A country in the runner system
+    Course:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          description: The unique course identifier
+          format: int64
+          example: 1
+        name:
+          type: string
+          description: Course name
+          example: Wellington Half Marathon
+        country:
+          type: string
+          description: ISO country code the course is located in
+          example: NZ
+      description: A course in the runner system
+    EventHistoryEntry:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          description: The course the event was held on
+          format: int64
+          example: 1
+        eventNumber:
+          type: integer
+          description: The event number within the course
+          format: int32
+          example: 1
+        name:
+          type: string
+          description: Event name
+          example: Wellington Half Marathon 2025
+        date:
+          type: string
+          description: Event date
+          example: 2025-03-15
+        status:
+          type: string
+          description: Event status
+          example: COMPLETED
+      description: A single event held on a course
+    EventResult:
+      type: object
+      properties:
+        eventNumber:
+          type: integer
+          description: The event number
+          format: int32
+          example: 1
+        position:
+          type: integer
+          description: Final position in the event
+          format: int32
+          example: 1
+        athleteId:
+          type: integer
+          description: The athlete identifier
+          format: int64
+          example: 1
+        athleteName:
+          type: string
+          description: Athlete name
+          example: Alice Smith
+        time:
+          type: string
+          description: Recorded finish time
+          example: 1:04:32
+      description: A single athlete result for an event
+    Volunteer:
+      type: object
+      properties:
+        volunteerId:
+          type: integer
+          description: The unique volunteer identifier
+          format: int64
+          example: 1
+        name:
+          type: string
+          description: Volunteer name
+          example: Sam Wilson
+        role:
+          type: string
+          description: Role fulfilled by the volunteer
+          example: Water Station
+      description: A volunteer assigned to an event

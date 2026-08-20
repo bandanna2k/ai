@@ -12,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,8 +76,31 @@ public class SpecGenerator
         }
     }
 
+    /**
+     * Resolves the module root directory regardless of the working directory.
+     * The compiled class lives under &lt;module-root&gt;/build/classes/..., so we
+     * walk up from the code-source location until we find the "build" segment
+     * and return its parent.  Falls back to the current working directory when
+     * the code source cannot be determined (e.g. running from a fat-jar).
+     */
+    private Path resolveModuleRoot() {
+        try {
+            Path classesPath = Path.of(
+                    SpecGenerator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            Path p = classesPath.toAbsolutePath();
+            while (p != null) {
+                if ("build".equals(p.getFileName() != null ? p.getFileName().toString() : null)) {
+                    return p.getParent();
+                }
+                p = p.getParent();
+            }
+        } catch (Exception ignored) {
+        }
+        return Path.of(".").toAbsolutePath();
+    }
+
     private void writeSpecFile(OpenAPI openAPI) throws IOException {
-        Path generatedPath = resolveGeneratedPath();
+        Path generatedPath = resolveModuleRoot().resolve("build").resolve(GENERATED_FOLDER);
         Files.createDirectories(generatedPath);
 
         Path specFilePath = generatedPath.resolve(SPEC_FILE_NAME);
@@ -89,11 +111,6 @@ public class SpecGenerator
         }
 
         System.out.println("Generated spec file: " + specFilePath.toAbsolutePath());
-    }
-
-    private Path resolveGeneratedPath()
-    {
-        return Paths.get("").toAbsolutePath().resolve("src").resolve(GENERATED_FOLDER);
     }
 
     public static void main(String[] args) {
