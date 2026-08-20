@@ -1,26 +1,8 @@
 package dnt.ai.runnerapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dnt.ai.runnerapp.handlers.AthleteApiHandler;
-import dnt.ai.runnerapp.handlers.CoursesApiHandler;
-import dnt.ai.runnerapp.handlers.CountriesApiHandler;
-import dnt.ai.runnerapp.handlers.EventHistoryApiHandler;
-import dnt.ai.runnerapp.handlers.EventResultsApiHandler;
-import dnt.ai.runnerapp.handlers.EventVolunteersApiHandler;
-import dnt.ai.runnerapp.model.Athlete;
-import dnt.ai.runnerapp.model.Country;
-import dnt.ai.runnerapp.model.Course;
-import dnt.ai.runnerapp.model.ErrorResponse;
-import dnt.ai.runnerapp.model.EventHistoryEntry;
-import dnt.ai.runnerapp.model.EventResult;
-import dnt.ai.runnerapp.model.Volunteer;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import dnt.ai.runnerapp.handlers.*;
+import dnt.ai.runnerapp.model.*;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -75,16 +57,6 @@ public class Main {
                     LOGGER.info("Runner app started on port {}", httpServer.actualPort());
                 })
                 .onFailure(t -> LOGGER.error("Failed to start runner app", t));
-    }
-
-    public Future<Void> stop() {
-        if (server == null) return Future.succeededFuture();
-        return server.close().mapEmpty();
-    }
-
-    public int actualPort() {
-        if (server == null) throw new IllegalStateException("Server not started");
-        return server.actualPort();
     }
 
     // ------------------------------------------------------------------
@@ -216,9 +188,4 @@ public class Main {
                     1, List.of(
                             new Volunteer().volunteerId(3).name("Mike Brown").role("Course Marshal")))
     );
-
-    // ------------------------------------------------------------------
-    // API interfaces (code-first OpenAPI definitions)
-    // ------------------------------------------------------------------
-
 }
