@@ -35,6 +35,33 @@ test {
     useJUnitPlatform()
 }
 
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'dnt.ai.runnerapp.Main',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+tasks.register('uberJar', Jar) {
+    manifest {
+        attributes(
+            'Main-Class': 'dnt.ai.runnerapp.Main',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+    archiveFileName = 'runner-app-all.jar'
+    duplicatesStrategy = 'exclude'
+
+    from sourceSets.main.output
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 tasks.register('generateSpec', JavaExec) {
     group = 'openapi'
     description = 'Generates OpenAPI spec.yaml from Swagger annotations'

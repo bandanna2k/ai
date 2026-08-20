@@ -1,5 +1,9 @@
 FROM eclipse-temurin:25-jre-alpine
 
-#COPY runner.jar /opt/runner/runner.jar
-#
-#ENTRYPOINT ["java", "-jar", "runner.jar"]
+WORKDIR /opt/runner-app
+
+COPY runner-app/build/libs/runner-app-all.jar runner-app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "runner-app.jar"]

@@ -1,34 +1,34 @@
 services:
-  llm:
-    build:
-      context: .
-      dockerfile: llm/Dockerfile
-    ports:
-      - "11434:11434"
-    network_mode: host
+#  llm:
+#    build:
+#      context: .
+#      dockerfile: llm/Dockerfile
+#    ports:
+#      - "11434:11434"
+#    network_mode: host
 
-  # Agent: UI that allows users to interact with the LLM and manage their tasks.
-  # It provides a user-friendly interface for users to input their queries, view results, and manage their tasks effectively.
-  agent:
-    environment:
-      - OLLAMA_HOST=http://localhost:11434
-    depends_on:
-      - llm
-    image: local-llm-agent
-    ports:
-      - "8080:8080"
-    network_mode: host
+#  # Agent: UI that allows users to interact with the LLM and manage their tasks.
+#  # It provides a user-friendly interface for users to input their queries, view results, and manage their tasks effectively.
+#  agent:
+#    environment:
+#      - OLLAMA_HOST=http://localhost:11434
+#    depends_on:
+#      - llm
+#    image: local-llm-agent
+#    ports:
+#      - "8080:8080"
+#    network_mode: host
 
   # Runner: A RESTful service that executes the tasks defined by the agent.
   runner_app:
     build:
-      context: .
-      dockerfile: runner_app/Dockerfile
+      context: ..
+      dockerfile: docker/runner_app/Dockerfile
     network_mode: host
 
-  runner_db:
-    env_file:
-      - runner_db/.env
-    image: mysql
-    network_mode: host
+#  runner_db:
+#    env_file:
+#      - runner_db/.env
+#    image: mysql
+#    network_mode: host
 

@@ -11,15 +11,17 @@ echo "Building frontend..."
 )
 
 echo ""
-echo "Building uber JAR..."
+echo "Building uber JARs..."
 cd ../..
-./gradlew :casestudy:local-llm-with-agent:agent:uberJar
+#./gradlew :casestudy:local-llm-with-agent:agent:uberJar
+./gradlew :casestudy:local-llm-with-agent:runner-app:uberJar
 cd casestudy/local-llm-with-agent
 
 echo ""
 echo "✓ Build complete!"
 echo "  Frontend: agent/src/main/resources/dist/"
 echo "  JAR: agent/build/libs/agent-all.jar"
+echo "  JAR: runner-app/build/libs/runner-app-all.jar"
 echo ""
 echo "To start with Docker Compose:"
 echo "  docker-compose up"
