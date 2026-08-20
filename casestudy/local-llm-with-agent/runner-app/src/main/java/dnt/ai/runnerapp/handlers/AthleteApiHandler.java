@@ -1,6 +1,6 @@
 package dnt.ai.runnerapp.handlers;
 
-import dnt.ai.runnerapp.Main;
+import dnt.ai.runnerapp.api.AthleteApi;
 import dnt.ai.runnerapp.model.Athlete;
 import io.vertx.ext.web.RoutingContext;
 
@@ -10,7 +10,7 @@ import static dnt.ai.runnerapp.Main.parseIds;
 import static dnt.ai.runnerapp.Main.respondError;
 import static dnt.ai.runnerapp.Main.respondJson;
 
-public class AthleteApiHandler implements Main.AthleteApi
+public class AthleteApiHandler implements AthleteApi
 {
     private final List<Athlete> athletes;
 

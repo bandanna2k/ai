@@ -1,6 +1,6 @@
 package dnt.ai.runnerapp.handlers;
 
-import dnt.ai.runnerapp.Main;
+import dnt.ai.runnerapp.api.CoursesApi;
 import dnt.ai.runnerapp.model.Course;
 import io.vertx.ext.web.RoutingContext;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 import static dnt.ai.runnerapp.Main.respondJson;
 
-public class CoursesApiHandler implements Main.CoursesApi
+public class CoursesApiHandler implements CoursesApi
 {
     private final List<Course> courses;
 

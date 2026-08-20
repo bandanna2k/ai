@@ -1,6 +1,6 @@
 package dnt.ai.runnerapp.handlers;
 
-import dnt.ai.runnerapp.Main;
+import dnt.ai.runnerapp.api.EventResultsApi;
 import dnt.ai.runnerapp.model.EventResult;
 import io.vertx.ext.web.RoutingContext;
 
@@ -11,7 +11,7 @@ import static dnt.ai.runnerapp.Main.respondJson;
 import static dnt.ai.runnerapp.Main.tryParseInt;
 import static dnt.ai.runnerapp.Main.tryParseLong;
 
-public class EventResultsApiHandler implements Main.EventResultsApi
+public class EventResultsApiHandler implements EventResultsApi
 {
     private final Map<Long, List<EventResult>> eventResults;
 

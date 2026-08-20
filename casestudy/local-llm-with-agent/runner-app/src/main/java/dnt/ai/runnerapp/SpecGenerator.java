@@ -1,5 +1,6 @@
 package dnt.ai.runnerapp;
 
+import dnt.ai.runnerapp.api.*;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.jaxrs2.Reader;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
@@ -25,12 +26,12 @@ public class SpecGenerator
     {
         try {
             Set<Class<?>> resourceClasses = new HashSet<>(Arrays.asList(
-                    Main.CountriesApi.class,
-                    Main.CoursesApi.class,
-                    Main.AthleteApi.class,
-                    Main.EventHistoryApi.class,
-                    Main.EventResultsApi.class,
-                    Main.EventVolunteersApi.class
+                    CountriesApi.class,
+                    CoursesApi.class,
+                    AthleteApi.class,
+                    EventHistoryApi.class,
+                    EventResultsApi.class,
+                    EventVolunteersApi.class
             ));
 
             // Nested classes use binary names (with $) which Class.forName can resolve.

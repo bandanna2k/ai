@@ -1,6 +1,6 @@
 package dnt.ai.runnerapp.handlers;
 
-import dnt.ai.runnerapp.Main;
+import dnt.ai.runnerapp.api.EventHistoryApi;
 import dnt.ai.runnerapp.model.EventHistoryEntry;
 import io.vertx.ext.web.RoutingContext;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import static dnt.ai.runnerapp.Main.respondJson;
 import static dnt.ai.runnerapp.Main.tryParseLong;
 
-public class EventHistoryApiHandler implements Main.EventHistoryApi
+public class EventHistoryApiHandler implements EventHistoryApi
 {
     private final List<EventHistoryEntry> eventHistory;
 
