@@ -26,7 +26,6 @@ public class Main {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final Vertx vertx;
-    private HttpServer server;
 
     public static void main(String[] args) {
         new Main().start().toCompletionStage().toCompletableFuture().join();
@@ -53,7 +52,6 @@ public class Main {
                 .requestHandler(router)
                 .listen(8080)
                 .onSuccess(httpServer -> {
-                    this.server = httpServer;
                     LOGGER.info("Runner app started on port {}", httpServer.actualPort());
                 })
                 .onFailure(t -> LOGGER.error("Failed to start runner app", t));
