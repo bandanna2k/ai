@@ -26,6 +26,15 @@ services:
       dockerfile: docker/runner_app/Dockerfile
     network_mode: host
 
+  # MCP server backed by the runner-app OpenAPI spec.
+  mcp_openapi_runner:
+    build:
+      context: ..
+      dockerfile: docker/mcp_openapi_runner/Dockerfile
+    depends_on:
+      - runner_app
+    network_mode: host
+
 #  runner_db:
 #    env_file:
 #      - runner_db/.env

@@ -50,6 +50,26 @@ This will:
 - Start the agent UI on port 8080
 - Start the runner service on port 10201 and database
 
+### OpenAPI MCP (runner-app)
+
+A dedicated service (`mcp_openapi_runner`) is available in `docker/compose.yaml`.
+It starts `openapi-mcp` using the runner OpenAPI spec generated at build time.
+It runs as an HTTP/SSE server on port `8081`.
+
+Build-time spec source:
+
+- `runner-app/build/generated/spec.yaml`
+
+Run flow:
+
+1. Generate spec and build runner artifacts.
+2. Build and start Docker Compose services.
+
+The MCP container defaults to:
+
+- `--http=:8081`
+- `--mount /runner:/opt/mcp/spec.yaml`
+
 Access the UI at: http://localhost:8080
 
 ## Architecture
