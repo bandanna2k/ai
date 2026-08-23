@@ -1,22 +1,23 @@
 package dnt.ai.runnerapp.handlers;
 
 import dnt.ai.runnerapp.api.AthletesById;
+import dnt.ai.runnerapp.command.GetAthletesByIdCommand;
+import dnt.ai.runnerapp.command.AthletesCommandHandler;
 import dnt.ai.runnerapp.model.Athlete;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.List;
 
-import static dnt.ai.runnerapp.Main.parseIds;
 import static dnt.ai.runnerapp.Main.respondError;
 import static dnt.ai.runnerapp.Main.respondJson;
 
 public class AthletesByIdHandler implements AthletesById
 {
-    private final List<Athlete> athletes;
+    private final AthletesCommandHandler commandHandler;
 
-    public AthletesByIdHandler(List<Athlete> athletes)
+    public AthletesByIdHandler(AthletesCommandHandler commandHandler)
     {
-        this.athletes = athletes;
+        this.commandHandler = commandHandler;
     }
 
     @Override
@@ -27,10 +28,9 @@ public class AthletesByIdHandler implements AthletesById
             respondError(ctx, 400, "BAD_REQUEST", "Query parameter 'ids' is required");
             return;
         }
-        List<Long> ids = parseIds(idsParam);
-        List<Athlete> result = athletes.stream()
-                .filter(athlete -> ids.contains(athlete.athleteId))
-                .toList();
+        List<Long> ids = dnt.ai.runnerapp.Main.parseIds(idsParam);
+        GetAthletesByIdCommand command = new GetAthletesByIdCommand(ids);
+        List<Athlete> result = commandHandler.handle(command);
         respondJson(ctx, 200, result);
     }
 }

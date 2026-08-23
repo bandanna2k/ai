@@ -1,6 +1,8 @@
 package dnt.ai.runnerapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dnt.ai.runnerapp.command.AthletesCommandHandler;
+import dnt.ai.runnerapp.dao.AthleteDao;
 import dnt.ai.runnerapp.handlers.*;
 import dnt.ai.runnerapp.model.*;
 import io.vertx.core.Future;
@@ -12,7 +14,9 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import javax.sql.DataSource;
 import javax.ws.rs.*;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -41,9 +45,13 @@ public class Main {
         router.route().handler(BodyHandler.create());
         router.route().failureHandler(Main::handleFailure);
 
+        DataSource ds = null;
+        NamedParameterJdbcTemplate namedJdbc = new NamedParameterJdbcTemplate(ds);
+
         addHandler(router, new CountriesApiHandler(COUNTRIES));
         addHandler(router, new CoursesApiHandler(COURSES));
-        addHandler(router, new AthletesByIdHandler(ATHLETES));
+        addHandler(router, new AthletesByIdHandler(new AthletesCommandHandler(new AthleteDao(namedJdbc))));
+        addHandler(router, new AthletesByNameHandler(new AthletesCommandHandler(new AthleteDao(namedJdbc))));
         addHandler(router, new EventHistoryApiHandler(EVENT_HISTORY));
         addHandler(router, new EventResultsApiHandler(EVENT_RESULTS));
         addHandler(router, new EventVolunteersApiHandler(EVENT_VOLUNTEERS));
@@ -153,6 +161,13 @@ public class Main {
     );
 
     private static final List<Athlete> ATHLETES = List.of(
+            new Athlete().athleteId(1).name("Alice Smith").country("GB"),
+            new Athlete().athleteId(2).name("Bob Jones").country("NZ"),
+            new Athlete().athleteId(3).name("Carol Lee").country("AU"),
+            new Athlete().athleteId(4).name("David Kim").country("GB")
+    );
+
+    private static final List<Athlete> ATHLETES_BY_NAME = List.of(
             new Athlete().athleteId(1).name("Alice Smith").country("GB"),
             new Athlete().athleteId(2).name("Bob Jones").country("NZ"),
             new Athlete().athleteId(3).name("Carol Lee").country("AU"),
