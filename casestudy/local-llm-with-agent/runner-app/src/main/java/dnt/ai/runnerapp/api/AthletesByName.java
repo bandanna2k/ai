@@ -16,16 +16,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/athlete")
-public interface AthleteApi extends Handler<RoutingContext> {
+public interface AthletesByName extends Handler<RoutingContext> {
     @GET
     @Operation(
-            operationId = "getAthlete",
+            operationId = "getAthleteByName",
             summary = "Get athletes",
-            description = "Returns athlete details for the given ids",
+            description = "Returns athlete details for the given name",
             tags = {"RunnerApp"},
             parameters = {
-                    @Parameter(name = "ids", in = ParameterIn.QUERY, required = true,
-                            description = "Comma separated list of athlete ids", schema = @Schema(type = "string"))
+                    @Parameter(name = "name", in = ParameterIn.QUERY, required = true,
+                            description = "Comma separated list of partial athlete name", schema = @Schema(type = "string"))
             }
     )
     @ApiResponse(

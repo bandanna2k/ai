@@ -27,7 +27,8 @@ public class SpecGenerator
             Set<Class<?>> resourceClasses = new HashSet<>(Arrays.asList(
                     CountriesApi.class,
                     CoursesApi.class,
-                    AthleteApi.class,
+                    AthletesById.class,
+                    AthletesByName.class,
                     EventHistoryApi.class,
                     EventResultsApi.class,
                     EventVolunteersApi.class

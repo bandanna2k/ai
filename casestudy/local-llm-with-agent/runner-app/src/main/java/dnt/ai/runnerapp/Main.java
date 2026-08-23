@@ -43,7 +43,7 @@ public class Main {
 
         addHandler(router, new CountriesApiHandler(COUNTRIES));
         addHandler(router, new CoursesApiHandler(COURSES));
-        addHandler(router, new AthleteApiHandler(ATHLETES));
+        addHandler(router, new AthletesByIdHandler(ATHLETES));
         addHandler(router, new EventHistoryApiHandler(EVENT_HISTORY));
         addHandler(router, new EventResultsApiHandler(EVENT_RESULTS));
         addHandler(router, new EventVolunteersApiHandler(EVENT_VOLUNTEERS));

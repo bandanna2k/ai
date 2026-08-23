@@ -25,9 +25,6 @@ public class Athlete {
     )
     public String country;
 
-    public Athlete() {
-    }
-
     public Athlete athleteId(long athleteId) {
         this.athleteId = athleteId;
         return this;
