@@ -136,14 +136,6 @@ public class Main {
         }
     }
 
-    public static List<Long> parseIds(String ids) {
-        return Arrays.stream(ids.split(","))
-                .map(String::trim)
-                .filter(id -> !id.isEmpty())
-                .map(Long::parseLong)
-                .collect(Collectors.toList());
-    }
-
     // ------------------------------------------------------------------
     // Stub data
     // ------------------------------------------------------------------

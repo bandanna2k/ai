@@ -2,6 +2,7 @@ package dnt.ai.runnerapp.handlers;
 
 import dnt.ai.runnerapp.api.AthletesByName;
 import dnt.ai.runnerapp.command.AthletesCommandHandler;
+import dnt.ai.runnerapp.command.GetAthletesByNameCommand;
 import dnt.ai.runnerapp.dao.Athlete;
 import io.vertx.ext.web.RoutingContext;
 
@@ -27,10 +28,8 @@ public class AthletesByNameHandler implements AthletesByName
             respondError(ctx, 400, "BAD_REQUEST", "Query parameter 'name' is required");
             return;
         }
-        GetAthletesByNameCommand command = new GetAthletesByNameCommand(nameParam);
+        final GetAthletesByNameCommand command = new GetAthletesByNameCommand(nameParam);
         List<Athlete> result = commandHandler.handle(command);
         respondJson(ctx, 200, result);
     }
-
-    public record GetAthletesByNameCommand(String name) {}
 }

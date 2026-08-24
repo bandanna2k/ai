@@ -26,7 +26,7 @@ class AthleteDaoTest {
         AthleteDao dao = buildDao();
 
         List<Athlete> results = dao.findByName("Richard FOX");
-        System.out.println(results);
+        results.forEach(System.out::println);
         assertThat(results)
                 .isNotEmpty()
                 .allSatisfy(athlete ->
