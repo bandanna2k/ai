@@ -1,14 +1,14 @@
 package dnt.ai.runnerapp.handlers;
 
 import dnt.ai.runnerapp.api.AthletesByName;
-import dnt.ai.runnerapp.command.GetAthletesByNameCommand;
 import dnt.ai.runnerapp.command.AthletesCommandHandler;
-import dnt.ai.runnerapp.model.Athlete;
-import java.util.List;
+import dnt.ai.runnerapp.dao.Athlete;
 import io.vertx.ext.web.RoutingContext;
 
-import static dnt.ai.runnerapp.Main.respondJson;
+import java.util.List;
+
 import static dnt.ai.runnerapp.Main.respondError;
+import static dnt.ai.runnerapp.Main.respondJson;
 
 public class AthletesByNameHandler implements AthletesByName
 {
@@ -31,4 +31,6 @@ public class AthletesByNameHandler implements AthletesByName
         List<Athlete> result = commandHandler.handle(command);
         respondJson(ctx, 200, result);
     }
+
+    public record GetAthletesByNameCommand(String name) {}
 }

@@ -1,9 +1,8 @@
 package dnt.ai.runnerapp.handlers;
 
 import dnt.ai.runnerapp.api.AthletesById;
-import dnt.ai.runnerapp.command.GetAthletesByIdCommand;
 import dnt.ai.runnerapp.command.AthletesCommandHandler;
-import dnt.ai.runnerapp.model.Athlete;
+import dnt.ai.runnerapp.dao.Athlete;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.List;
@@ -33,4 +32,6 @@ public class AthletesByIdHandler implements AthletesById
         List<Athlete> result = commandHandler.handle(command);
         respondJson(ctx, 200, result);
     }
+
+    public record GetAthletesByIdCommand(List<Long> ids) {}
 }

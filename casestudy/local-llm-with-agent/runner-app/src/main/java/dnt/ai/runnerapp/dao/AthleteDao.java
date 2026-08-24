@@ -1,13 +1,14 @@
 package dnt.ai.runnerapp.dao;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import dnt.ai.runnerapp.model.Athlete;
 import java.util.List;
 
 public class AthleteDao
 {
+    private static final int LIMIT = 10;
     private final NamedParameterJdbcTemplate namedJdbc;
 
     public AthleteDao(NamedParameterJdbcTemplate namedJdbc)
@@ -21,13 +22,12 @@ public class AthleteDao
                 SELECT name, athlete_id
                 FROM athlete
                 WHERE athlete_id IN (:ids)
+                LIMIT :limit
                 """,
-            new MapSqlParameterSource("ids", ids),
-            (rs, rowNum) -> {
-                return new Athlete()
-                        .name(rs.getString("name"))
-                        .athleteId(rs.getLong("athlete_id"));
-            }
+            new MapSqlParameterSource()
+                    .addValue("ids", ids)
+                    .addValue("limit", LIMIT),
+                athleteRowMapper()
         );
     }
 
@@ -36,14 +36,19 @@ public class AthleteDao
         return namedJdbc.query("""
                 SELECT name, athlete_id
                 FROM athlete
-                WHERE name like '%:name%'
+                WHERE name LIKE CONCAT('%', :name, '%')
+                LIMIT :limit
                 """,
-            new MapSqlParameterSource("name", name),
-            (rs, rowNum) -> {
-                return new Athlete()
-                        .name(rs.getString("name"))
-                        .athleteId(rs.getLong("athlete_id"));
-            }
+            new MapSqlParameterSource()
+                    .addValue("name", name)
+                    .addValue("limit", LIMIT),
+                athleteRowMapper()
         );
+    }
+
+    private static RowMapper<Athlete> athleteRowMapper() {
+        return (rs, rowNum) -> new Athlete(
+                rs.getString("name"),
+                rs.getLong("athlete_id"));
     }
 }

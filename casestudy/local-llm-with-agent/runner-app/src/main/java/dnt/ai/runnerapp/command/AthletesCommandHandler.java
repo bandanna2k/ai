@@ -1,7 +1,10 @@
 package dnt.ai.runnerapp.command;
 
+import dnt.ai.runnerapp.dao.Athlete;
 import dnt.ai.runnerapp.dao.AthleteDao;
-import dnt.ai.runnerapp.model.Athlete;
+import dnt.ai.runnerapp.handlers.AthletesByIdHandler;
+import dnt.ai.runnerapp.handlers.AthletesByNameHandler;
+
 import java.util.List;
 
 public class AthletesCommandHandler
@@ -13,12 +16,12 @@ public class AthletesCommandHandler
         this.athleteDao = athleteDao;
     }
 
-    public List<Athlete> handle(GetAthletesByIdCommand command)
+    public List<Athlete> handle(AthletesByIdHandler.GetAthletesByIdCommand command)
     {
         return athleteDao.findByIds(command.ids());
     }
 
-    public List<Athlete> handle(GetAthletesByNameCommand command)
+    public List<Athlete> handle(AthletesByNameHandler.GetAthletesByNameCommand command)
     {
         return athleteDao.findByName(command.name());
     }

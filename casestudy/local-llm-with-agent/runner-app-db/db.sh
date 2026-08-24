@@ -10,7 +10,7 @@ docker run -d \
   mysql
 
 echo "Waiting for MySQL..."
-sleep 10
+sleep 20
 
 echo "Unzipping dump files"
 unzip -n dump.zip
